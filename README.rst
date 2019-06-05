@@ -18,7 +18,7 @@ pbpl-compton
 Python package for design and simulation of FACET-II gamma diagnostics.
 
 * Free software: MIT license
-* Documentation: https://pbpl-compton.readthedocs.io.
+* Documentation: http://rodan.physics.ucla.edu/pbpl-compton
 
 Features
 --------
