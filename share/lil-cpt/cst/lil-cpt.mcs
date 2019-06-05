@@ -1,0 +1,547 @@
+Option Explicit
+
+Sub Main()
+   BeginHide
+      StoreParameter("background_xbuf", "100.0")
+      StoreParameter("background_ybuf", "100.0")
+      StoreParameter("background_zbuf", "100.0")
+
+      StoreParameter("cpt_omega0", "40.0")
+      ' StoreParameter("cpt_omega1", "19.29")
+      StoreParameter("cpt_omega1", "22.5")
+      StoreParameter("cpt_omega2", "10")
+      StoreParameter("cpt_coil_width", "60.0")
+      StoreParameter("cpt_coil_height", "60.0")
+      
+      StoreParameter("cpt_r0", "10.0")
+      StoreParameter("cpt_a0", "50.0")
+      ' StoreParameter("cpt_a1", "75.0")
+      StoreParameter("cpt_a2", "cpt_a0+2*cpt_b1*tan(cpt_omega0*pi/180)")
+      StoreParameter("cpt_a3", "cpt_a2-2*cpt_a4")
+      StoreParameter("cpt_a4", "225.0")
+      StoreParameter("cpt_a5", "(cpt_c1-cpt_b0)/cos(cpt_omega0*pi/180)")
+      StoreParameter("cpt_b0", "10.0")
+      StoreParameter("cpt_b1", "300.0")
+      StoreParameter("cpt_b2", "140.0")
+      StoreParameter("cpt_b3", "100.0")
+      StoreParameter("cpt_c0", "60.0")
+      StoreParameter("cpt_c1", "cpt_b0+cpt_b1-cpt_c0")
+      StoreParameter("cpt_d0", "50.0")
+      StoreParameter("cpt_d1", "60.0")
+      StoreParameter("cpt_d2", "140.0")
+      StoreParameter("cpt_d3", "cpt_d0 + 2*(cpt_d1+cpt_d2)")
+      StoreParameter("cpt_e0", "10.0")
+      StoreParameter("cpt_e1", "cpt_e0+(cpt_d3-cpt_f0)*tan(cpt_omega2*pi/180)")
+      StoreParameter("cpt_f0", "100.0")
+      StoreParameter("cpt_vpole_a1", "0.1")
+      StoreParameter("cpt_coil_offset", "5.0")
+      ' StoreParameter("cpt_current", "16000.0")
+      StoreParameter("cpt_current", "18000.0")
+      StoreParameter("cpt_infinity", "2000.0")
+   EndHide
+
+   With Units
+      .Geometry("mm")
+      .Time("ns")
+   End With
+
+   With Background
+      .Reset()
+      .Type("Normal")
+      .Epsilon("1.0")
+      .XMinSpace("background_xbuf")
+      .YMinSpace("background_ybuf")
+      .ZMinSpace("background_zbuf")
+      .XMaxSpace("background_xbuf")
+      .YMaxSpace("background_ybuf")
+      .ZMaxSpace("background_zbuf")
+   End With
+
+   With Material
+      .Reset()
+      .Name("Scintillator")
+      .Type("normal")
+      .Epsilon("2")
+      .Mu("1")
+      ' .ParticleVolumeTransparency("False")
+      .Transparency("100")
+      .Transparentoutline("True")
+      .Create()
+   End With
+   
+   With Material
+      .Reset()
+      .Name("Iron")
+      .FrqType("Static")
+      .Type("normal")
+      .Epsilon("1")
+      ' .Mu("1000")
+      .Mu("1000")
+      .Sigma("1.04e7")
+      .Rho("7870.0")
+      .ThermalType("Normal")
+      .ThermalConductivity("79.5")
+      .HeatCapacity("0.45")
+      .Colour("0.4", "0.4", "0.4")
+      
+      ' .SetNonlinearCurveType("Soft-Magnetic-BH")
+      ' .AddNonlinearCurveValue("0.000000e+000", "0.000000e+000")
+      ' .AddNonlinearCurveValue("1.592000e+001", "4.500000e-002")
+      ' .AddNonlinearCurveValue("3.183000e+001", "4.900000e-001")
+      ' .AddNonlinearCurveValue("4.775000e+001", "7.800000e-001")
+      ' .AddNonlinearCurveValue("6.366000e+001", "9.900000e-001")
+      ' .AddNonlinearCurveValue("7.958000e+001", "1.130000e+000")
+      ' .AddNonlinearCurveValue("1.592000e+002", "1.420000e+000")
+      ' .AddNonlinearCurveValue("3.183000e+002", "1.570000e+000")
+      ' .AddNonlinearCurveValue("4.775000e+002", "1.621000e+000")
+      ' .AddNonlinearCurveValue("6.366000e+002", "1.641000e+000")
+      ' .AddNonlinearCurveValue("7.958000e+002", "1.656000e+000")
+      ' .AddNonlinearCurveValue("1.592000e+003", "1.697000e+000")
+      ' .AddNonlinearCurveValue("3.183000e+003", "1.764000e+000")
+      ' .AddNonlinearCurveValue("4.775000e+003", "1.801000e+000")
+      ' .AddNonlinearCurveValue("6.366000e+003", "1.838000e+000")
+      ' .AddNonlinearCurveValue("7.958000e+003", "1.870000e+000")
+      ' .AddNonlinearCurveValue("1.592000e+004", "2.000000e+000")
+      ' .AddNonlinearCurveValue("3.183000e+004", "2.136000e+000")
+      ' .AddNonlinearCurveValue("4.775000e+004", "2.185000e+000")
+      ' .AddNonlinearCurveValue("6.366000e+004", "2.220000e+000")
+      ' .AddNonlinearCurveValue("7.958000e+004", "2.250000e+000")
+      ' .AddNonlinearCurveValue("1.592000e+005", "2.355000e+000")
+      ' .AddNonlinearCurveValue("3.183000e+005", "2.556000e+000")
+      ' .GenerateNonlinearCurve()
+      .Create()
+   End With
+	
+'     __  ____  ______ 
+'    /  ]|    \|      |
+'   /  / |  o  )      |
+'  /  /  |   _/|_|  |_|
+' /   \_ |  |    |  |  
+' \     ||  |    |  |  
+'  \____||__|    |__|  
+'
+' CPT
+
+   cpt_InsertPole()
+   cpt_InsertYokeAndCoils()
+   ' cpt_InsertYoke()
+   ' cpt_InsertWires()
+   ' cpt_InsertCoil()
+   cpt_InsertScintillator()
+
+   With WCS
+      .ActivateWCS("local")
+      .SetNormal("0", "0", "1")
+      .SetOrigin("0.0", "0", "0")
+      .SetUVector("1", "0", "0")
+   End With
+   
+   Group.Add("cpt_meshgroup", "mesh")
+
+   With MeshSettings
+      With .ItemMeshSettings ("group$cpt_meshgroup")
+	 .SetMeshType("Hex")
+	 .Set("EdgeRefinement", "1")
+	 .Set("Extend", "0", "0", "0")
+	 .Set("RefinementPolicy", "ABS_VALUE")
+	 .Set("Step", "0", "2", "6")
+	 .Set("StepRefinementCollectPolicy", "REFINE_INTERIOR")
+	 .Set("StepRefinementExtentPolicy", "EXTENT_ABS_VALUE")
+	 .Set("UseSameExtendXYZ", 0)
+	 .Set("UseSameStepWidthXYZ", 0)
+      End With
+   End With
+
+   Group.AddItem("solid$cpt_pole:bottom", "cpt_meshgroup")
+   Group.AddItem("solid$cpt_pole:top", "cpt_meshgroup")
+
+   Mesh.SetCreator("Tracking")
+   Mesh.SetFlavor("Low Frequency")
+   
+   With TrackingSolver
+      .Reset()
+      .Method("Hexahedral")
+      .SolverOrderTet("2")
+      .MaxTimeSteps("20000")
+      .SetSpatialSamplingRate("5")
+      .SetTrajectorySampling("ADAPTIVE", "0.5")
+      .SetTemporalDynamic("1.2")
+      .ConsiderSpacecharge("True")
+      .SetGunIteration("False")
+      .SetGunIterationMaxN("10")
+      .SetGunIterationAccuracy("-30 dB")
+      .SetGunIterationRelaxation("0.3")
+      .SetGunIterationWithHField("False")
+      .StoreResultsInDataCache("True")
+      .AddTrackingSource("All sources", "")
+      .AddStaticsField("M-static", "1.0", "False")
+      .DefaultBoundaryEstatic("normal")
+      .DefaultBoundaryMstatic("tangential")
+   End With
+
+   With ParticleInterface
+      .Reset()
+      .Name("particle interface 1")
+      .Type("Import ASCII DC")
+      .InterfaceFile("C:\cygwin64\home\naranjo\src\cst\Macros\Brian\LIL-CPT-A.pid")
+      .UseRelativePath("False")
+      .UseLocalCopyOnly("False")
+      ' .DirNew("X")
+      ' .InvertOrientation("False")
+      ' .XShift("0.0")
+      ' .YShift("0.0")
+      ' .ZShift("-50")
+      .Create()
+   End With
+End Sub
+
+
+Public Function cpt_InsertPole()
+   With WCS
+      .ActivateWCS("local")
+      .SetNormal("0", "-1", "0")
+      .SetOrigin("0", "0", "0")
+      .SetUVector("1", "0", "0")
+   End With
+
+   ' pole with trapezoidal cross-section
+   With Polygon
+      .Reset()
+      .Name("magnet_profile_horizontal")
+      .Curve("curve_magnet_profile_horizontal")
+      .Point("-0.5*cpt_a0", "cpt_b0")
+      .LineTo("0.5*cpt_a0", "cpt_b0")
+      .LineTo("0.5*cpt_a0+cpt_b1*tan(cpt_omega0*pi/180)", "cpt_b0+cpt_b1")
+      .LineTo("0.5*cpt_a0+cpt_b1*tan(cpt_omega0*pi/180)", "cpt_b0+cpt_b1+cpt_b2")
+      .LineTo("0.5*cpt_a3", "cpt_b0+cpt_b1+cpt_b2")
+      .LineTo("0.5*cpt_a3", "cpt_b0+cpt_b1")
+      ' .LineTo("0.5*cpt_a1", "cpt_b0+cpt_b1-cpt_b3")
+      ' .LineTo("-0.5*cpt_a1", "cpt_b0+cpt_b1-cpt_b3")
+      ' .LineTo("-0.5*cpt_a1-cpt_b3*tan(cpt_omega1*pi/180)", "cpt_b0+cpt_b1")
+      ' .LineTo("-0.5*cpt_a0-cpt_b1*tan(cpt_omega0*pi/180)", "cpt_b0+cpt_b1")
+      .LineTo("-0.5*cpt_a0", "cpt_b0")
+      .Create()
+   End With
+
+   With ExtrudeCurve
+      .Reset()
+      .Name("bottom")
+      .Component("cpt_pole")
+      .Material("Iron")
+      .Thickness("0.5*cpt_d3")
+      .DeleteProfile("True")
+      .Curve("curve_magnet_profile_horizontal:magnet_profile_horizontal")
+      .Create()
+   End With
+
+   With WCS
+      .ActivateWCS("local")
+      .SetNormal("1", "0", "0")
+      .SetOrigin("1000.0", "0", "0")
+      .SetUVector("0", "0", "1")
+   End With
+
+   With AnalyticalCurve
+      .Reset()
+      .Name("analytical1")
+      .Curve("curve_magnet_profile_horizontal")
+      .LawX("t")
+      .LawY( _
+	    "0.5*(tanh((cpt_c1-t)/cpt_vpole_a1)+1)" _
+	    & "*0.5*cpt_d0/(t/(cpt_c1))" _
+	    & "+ 0.5*(tanh((t-cpt_c1)/cpt_vpole_a1)+1)" _
+	    & "*(0.5*cpt_d0 + cpt_d1)")
+      ' .LawY("10")
+      .LawZ("0")
+      .ParameterRange("cpt_b0-1", "cpt_b0+cpt_b1+cpt_b2+1")
+      .Create()
+   End With
+
+   Pick.NextPickToDatabase("1")
+   Pick.PickCurveEndpointFromId("curve_magnet_profile_horizontal:analytical1", "1")
+   Pick.NextPickToDatabase("2")
+   Pick.PickCurveEndpointFromId("curve_magnet_profile_horizontal:analytical1", "2")
+
+   With Polygon 
+      .Reset()
+      .Name("polygon1")
+      .Curve("curve_magnet_profile_horizontal")
+      .Point("xp(1)", "yp(1)")
+      .LineTo("0", "0")
+      .LineTo("cpt_b0+cpt_b1+cpt_b2", "0")
+      .LineTo("xp(2)", "yp(2)")
+      .Create() 
+   End With
+   
+   With ExtrudeCurve
+     .Reset()
+     .Name("solid1")
+     .Component("cpt_yoke")
+     .Material("Iron")
+     .Thickness("cpt_infinity")
+     .Twistangle("0.0")
+     .Taperangle("0.0")
+     .DeleteProfile("True")
+     .Curve("curve_magnet_profile_horizontal:analytical1")
+     .Create()
+   End With
+
+   Solid.Subtract("cpt_pole:bottom", "cpt_yoke:solid1")
+
+   With Transform 
+      .Reset()
+      .Name("cpt_pole")
+      .Origin("Free")
+      .Center("0", "0", "0")
+      .PlaneNormal("0", "1", "0")
+      .MultipleObjects("True")
+      .GroupObjects("False")
+      .Repetitions("1")
+      .MultipleSelection("False")
+      .Destination("")
+      .Material("")
+      .Transform("Shape", "Mirror")
+   End With
+   Solid.Rename("cpt_pole:bottom_1", "cpt_pole:top")
+   
+End Function
+
+Public Function cpt_InsertYokeAndCoils()
+   With WCS
+      .SetNormal("0", "-1", "0")
+      .SetOrigin("0", "0", "cpt_b0+cpt_b1+0.5*cpt_b2")
+      .SetUVector("1", "0", "0")
+   End With
+   
+   Component.New("cpt_yoke")
+   
+   WCS.MoveWCS("local", "0.0", "0.0", "0.5*cpt_d0+cpt_d1")
+
+   With Rectangle
+      .Reset()
+      .Name("rectangle2")
+      .Curve("curve_magnet_profile_horizontal")
+      .Xrange("0.5*cpt_a3", "0.5*cpt_a2")
+      .Yrange("-0.5*cpt_b2", "0.5*cpt_b2")
+      .Create()
+   End With
+
+   With BlendCurve
+      .Reset()
+      .Name("blend1")
+      .Radius("cpt_r0")
+      .Curve("curve_magnet_profile_horizontal")
+      .CurveItem1("rectangle2")
+      .CurveItem2("rectangle2")
+      .EdgeId1("2")
+      .EdgeId2("3")
+      .VertexId1("3")
+      .VertexId2("3")
+      .Create()
+   End With
+
+   With BlendCurve
+      .Reset()
+      .Name("blend2")
+      .Radius("cpt_r0")
+      .Curve("curve_magnet_profile_horizontal")
+      .CurveItem1("rectangle2")
+      .CurveItem2("rectangle2")
+      .EdgeId1("2")
+      .EdgeId2("3")
+      .VertexId1("3")
+      .VertexId2("3")
+      .Create()
+   End With
+
+   With BlendCurve
+      .Reset()
+      .Name("blend3")
+      .Radius("cpt_r0")
+      .Curve("curve_magnet_profile_horizontal")
+      .CurveItem1("rectangle2")
+      .CurveItem2("rectangle2")
+      .EdgeId1("2")
+      .EdgeId2("3")
+      .VertexId1("4")
+      .VertexId2("4")
+      .Create()
+   End With
+
+   With BlendCurve
+      .Reset()
+      .Name("blend4")
+      .Radius("cpt_r0")
+      .Curve("curve_magnet_profile_horizontal")
+      .CurveItem1("rectangle2")
+      .CurveItem2("rectangle2")
+      .EdgeId1("2")
+      .EdgeId2("3")
+      .VertexId1("4")
+      .VertexId2("4")
+      .Create()
+   End With
+
+   With ExtrudeCurve
+      .Reset()
+      .Name("solid1")
+      .Component("cpt_yoke")
+      .Material("Iron")
+      .Thickness("-(cpt_d0+2*cpt_d1)")
+      .DeleteProfile("False")
+      .Curve("curve_magnet_profile_horizontal")
+      .Create()
+   End With
+
+   With WCS
+      .SetNormal("0", "0", "1")
+      .SetOrigin("0.5*cpt_a3", "-0.5*cpt_d0-cpt_d1", "cpt_b0+cpt_b1+0.5*cpt_b2")
+      .SetUVector("1", "0", "0")
+   End With
+
+   With Rectangle
+      .Reset()
+      .Name("rectangle2")
+      .Curve("curve_coil_profile")
+      .Xrange("-cpt_coil_width", "0.0")
+      .Yrange("0", "cpt_coil_height")
+      .Create()
+   End With
+
+   With Coil
+      .Reset()
+      .Name("coil1")
+      .CoilType("Stranded Current")
+      .ToolType("CurveCurve")
+      .Value("cpt_current")
+      .CurrentDirection("Regular")
+      .ProjectProfileToPathAdvanced("True")
+      .ProfileName("curve_coil_profile:rectangle2")
+      .PathName("curve_magnet_profile_horizontal:rectangle2")
+      .Create()
+   End With
+
+   With WCS
+      .SetNormal("0", "0", "1")
+      .SetOrigin("0", "0", "0")
+      .SetUVector("1", "0", "0")
+   End With
+
+   With Transform 
+      .Reset()
+      .Name("coil1")
+      .Origin("Free")
+      .Center("0", "0", "0")
+      .PlaneNormal("0", "1", "0")
+      .MultipleObjects("True")
+      .GroupObjects("False")
+      .Repetitions("1")
+      .MultipleSelection("False")
+      .Destination("")
+      .Material("")
+      .Transform("Coil", "Mirror")
+   End With
+End Function
+
+Public Function cpt_InsertYoke()
+   With WCS
+      .SetNormal("0", "-1", "0")
+      .SetOrigin("0", "0", "cpt_b0+cpt_b1+0.5*cpt_b2")
+      .SetUVector("1", "0", "0")
+   End With
+   
+   Component.New("cpt_yoke")
+
+   With Brick
+      .Reset()
+      .Name("right")
+      .Component("cpt_yoke")
+      .Material("Iron")
+      .Xrange("0.5*cpt_a3", "0.5*cpt_a2")
+      .Yrange("-0.5*cpt_b2", "0.5*cpt_b2")
+      .Zrange("-0.5*cpt_d0-cpt_d1", "0.5*cpt_d0+cpt_d1")
+      .Create()
+   End With
+End Function
+
+Public Function cpt_InsertWires()
+   WCS.MoveWCS("local", "0.0", "0.0", _
+	       "(0.5*cpt_d0+cpt_d1)-cpt_coil_offset")
+
+   With Rectangle
+      .Reset()
+      .Name("rectangle2")
+      .Curve("curve_magnet_profile_horizontal")
+      .Xrange("0.5*cpt_a3-cpt_coil_offset", "0.5*cpt_a2+cpt_coil_offset")
+      .Yrange("-0.5*cpt_b2-cpt_coil_offset", "0.5*cpt_b2+cpt_coil_offset")
+      .Create()
+   End With
+
+   With CurrentPath
+      .Reset()
+      .Name("cpt_wire_right")
+      .Type("CurvePath")
+      .Current("-cpt_current")
+      .Phase("0.0")
+      .PathCurve("curve_magnet_profile_horizontal:rectangle2")
+      .Add()
+   End With
+
+   WCS.MoveWCS("local", "0.0", "0.0", _
+   	       "-(0.5*cpt_d0+cpt_d1-cpt_coil_offset)")
+
+   With Transform 
+      .Reset()
+      .Name("cpt_wire_right")
+      .Origin("Free")
+      .Center("0", "0", "0")
+      .PlaneNormal("0", "0", "1")
+      .MultipleObjects("True")
+      .GroupObjects("False")
+      .Repetitions("1")
+      .MultipleSelection("True")
+      .Transform("CurrentPath", "Mirror")
+   End With 
+End Function
+
+
+Public Function cpt_InsertCoil()
+   With WCS
+      .SetNormal("0", "-1", "0")
+      .SetOrigin("0", "0", "cpt_b0+cpt_b1+0.5*cpt_b2")
+      .SetUVector("1", "0", "0")
+   End With
+
+   ' WCS.MoveWCS("local", "0.0", "0.0", "(0.5*cpt_d0+cpt_d1)-cpt_coil_offset")
+
+   With Rectangle
+      .Reset()
+      .Name("rectangle2")
+      .Curve("curve_magnet_profile_horizontal")
+      .Xrange("0.5*cpt_a3-cpt_coil_offset", "0.5*cpt_a2+cpt_coil_offset")
+      .Yrange("-0.5*cpt_b2-cpt_coil_offset", "0.5*cpt_b2+cpt_coil_offset")
+      .Create()
+   End With
+
+End Function
+
+Public Function cpt_InsertScintillator()
+   With WCS
+      .SetNormal("0", "0", "1")
+      .SetOrigin("0.5*cpt_a0", "0", "cpt_b0")
+      .SetUVector("1", "0", "0")
+   End With
+   
+   WCS.RotateWCS("v", "cpt_omega0")
+
+   With Brick
+      .Reset()
+      .Name("right")
+      .Component("cpt_scint")
+      .Material("Scintillator")
+      .Xrange("0.1", "10.1")
+      .Yrange("-125.0", "125.0")
+      .Zrange("-2", "cpt_a5")
+      .Create()
+   End With
+End Function
