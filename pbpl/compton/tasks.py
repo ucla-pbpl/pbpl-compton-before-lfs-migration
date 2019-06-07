@@ -4,14 +4,19 @@ import time
 from tempfile import NamedTemporaryFile
 import toml
 import tqdm
+import os
 
 class Task:
     def __init__(self, conf, desc):
         self.conf = conf
         self.desc = desc
 
+    def __del__(self):
+        os.unlink(self.conf_filename)
+
     def start(self):
         with NamedTemporaryFile('w', delete=False) as f:
+            self.conf_filename = f.name
             toml.dump(self.conf, f)
             f.close()
         self.proc = subprocess.Popen(
@@ -27,7 +32,7 @@ class Task:
             line = self.proc.stderr.readline().decode('utf-8')
             if line[:4] == 'TOT=':
                 num_events = int(line[4:])
-                fmt = ('{desc:>16s}:{percentage:3.0f}% ' +
+                fmt = ('{desc:>24s}:{percentage:3.0f}% ' +
                        '|{bar}| {n_fmt:>9s}/{total_fmt:<9s}')
                 self.bar = tqdm.tqdm(
                     total=num_events, bar_format=fmt,
