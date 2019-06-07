@@ -3,6 +3,7 @@ import os, sys, random
 import argparse
 import numpy as np
 import toml
+import time
 from collections import deque
 import Geant4 as g4
 from Geant4.hepunit import *
@@ -68,17 +69,29 @@ class MyRunAction(g4.G4UserRunAction):
         pass
 
 
-class MyEventAction(g4.G4UserEventAction):
-    "My Event Action"
-    count = 0
+class StatusEventAction(g4.G4UserEventAction):
+    "Status Event Action"
+
+    def __init__(self, num_events, update_period):
+        g4.G4UserEventAction.__init__(self)
+        sys.stderr.write('TOT={}\n'.format(num_events))
+        sys.stderr.flush()
+        self.num_events = num_events
+        self.count = 0
+        self.update_period = update_period
+        self.prev_time = time.time()
 
     def BeginOfEventAction(self, event):
-        MyEventAction.count += 1
-        if (MyEventAction.count % 100000 == 0):
-            print(MyEventAction.count)
+        pass
 
     def EndOfEventAction(self, event):
-        pass
+        curr_time = time.time()
+        elapsed = curr_time - self.prev_time
+        if elapsed >= self.update_period:
+            sys.stderr.write('CUR={}\n'.format(self.count))
+            sys.stderr.flush()
+            self.prev_time = curr_time
+        self.count += 1
 
 
 class MySteppingAction(g4.G4UserSteppingAction):
@@ -238,7 +251,6 @@ def create_detectors(conf):
         return result
 
     for name in (conf['Detectors']):
-        print(name)
         c = conf['Detectors'][name]
         sd_type = c['Type']
         if sd_type == 'SimpleDepositionSD':
@@ -251,6 +263,24 @@ def create_detectors(conf):
         result[name] = sd
     return result
 
+def create_event_actions(conf):
+    result = {}
+
+    if 'EventActions' not in conf:
+        return result
+
+    for name in (conf['EventActions']):
+        c = conf['EventActions'][name]
+        action_type = c['Type']
+        if action_type == 'Status':
+            num_events = conf['PrimaryGenerator']['NumEvents']
+            update_period = c['UpdatePeriod'] if 'UpdatePeriod' in c else 1.0
+            action = StatusEventAction(num_events, update_period)
+        else:
+            raise ValueError(
+                "unimplemented EventAction type '{}'".format(action_type))
+        result[name] = action
+    return result
 
 def main():
     args = get_args()
@@ -272,13 +302,18 @@ def main():
     pga = PrimaryGeneratorAction(args.conf)
     g4.gRunManager.SetUserAction(pga)
 
-    global t1, t2, t3
+    num_events = args.conf['PrimaryGenerator']['NumEvents']
+
+    global t1, t3
     t1 = MyRunAction()
-    t2 = MyEventAction()
     t3 = MySteppingAction()
     g4.gRunManager.SetUserAction(t1)
-    g4.gRunManager.SetUserAction(t2)
     g4.gRunManager.SetUserAction(t3)
+
+    global event_actions
+    event_actions = create_event_actions(args.conf)
+    for action in event_actions.values():
+        g4.gRunManager.SetUserAction(action)
 
     global fields
     fields = create_fields(args.conf)
@@ -291,7 +326,6 @@ def main():
     for x in args.macro_filenames:
         g4.gControlExecute(x)
 
-    num_events = args.conf['PrimaryGenerator']['NumEvents']
     g4.gRunManager.BeamOn(num_events)
 
     for k, sd in detectors.items():
