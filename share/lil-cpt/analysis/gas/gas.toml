@@ -1,0 +1,72 @@
+[PrimaryGenerator]
+PythonGenerator = 'gas.gamma_spray'
+NumEvents = 100000
+
+[Geometry.World]
+Type = 'G4Box'
+pX = 2000.0   # X half-length (unit=mm)
+pY = 2000.0   # Y half-length (unit=mm)
+pZ = 2000.0   # Z half-length (unit=mm)
+# Material = 'G4_Galactic'
+Material = 'G4_AIR'
+Translation = [0, 0, 0]
+Rotation = [0, 0, 0]
+Color = [0.0, 0.2, 1.0, 0.2]   # converter color (r g b a)
+Visible = false
+
+[Geometry.World.Converter]
+Type = 'G4Box'
+pX = 5.0
+pY = 100.0
+pZ = 0.250
+Material = 'G4_Li'
+Translation = [0.0, 0.0, -0.250]
+Rotation = [0, 0, 0]
+Color = [0.8, 0.8, 0.8, 1.0]   # converter color (r g b a)
+
+[Geometry.World.CptPoleBottom]
+Type = 'CadMesh'
+File = '../../cad/lil-cpt.stl'
+SolidName = 'cpt_pole:bottom'
+Material = 'G4_Fe'
+Color = [0.4, 0.4, 0.4, 1.0]
+
+[Geometry.World.CptPoleTop]
+Type = 'CadMesh'
+File = '../../cad/lil-cpt.stl'
+SolidName = 'cpt_pole:top'
+Material = 'G4_Fe'
+Color = [0.4, 0.4, 0.4, 1.0]
+
+[Geometry.World.CptYokeSolid1]
+Type = 'CadMesh'
+File = '../../cad/lil-cpt.stl'
+SolidName = 'cpt_yoke:solid1'
+Material = 'G4_Fe'
+Color = [0.4, 0.4, 0.4, 1.0]
+
+[Geometry.World.CptScintRight]
+Type = 'CadMesh'
+File = '../../cad/lil-cpt.stl'
+SolidName = 'cpt_scint:right'
+Material = 'G4_CESIUM_IODIDE'
+Color = [0.082, 0.722, 0.859, 0.3]   # converter color (r g b a)
+
+[Geometry.World.CptMagnet]
+Type = 'CadMesh'
+File = '../../cad/lil-cpt-magnet.stl'
+Material = 'G4_Cu'
+Color = [0.72, 0.45, 0.20, 1.0]   # converter color (r g b a)
+
+[Fields.LilCpt]
+Type = 'ImportedMagneticField'
+File = '../../field/B-field-2mm.h5'
+
+[Detectors.ComptonScintillator]
+Type = 'SimpleDepositionSD'
+Volumes = ['World.CptScintRight']
+File = 'edep.h5'
+
+[EventActions.Status]
+Type = 'Status'
+UpdatePeriod = 1.0
