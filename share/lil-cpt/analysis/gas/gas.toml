@@ -1,5 +1,6 @@
 [PrimaryGenerator]
 PythonGenerator = 'gas.gamma_spray'
+PythonGeneratorArgs = ['1*MeV', '0*mm']
 NumEvents = 100000
 
 [Geometry.World]

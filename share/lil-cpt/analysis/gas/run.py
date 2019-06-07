@@ -1,23 +1,34 @@
 #!/usr/bin/env python
 import sys
 import toml
-from pbpl import compton
 import copy
+import numpy as np
+from pbpl import compton
+from Geant4.hepunit import *
 
-def reconf(conf, material, num_events):
+def reconf(conf, desc, material, num_events, energy, y0):
     result = copy.deepcopy(conf)
     result['Geometry']['World']['Material'] = material
-    result['Detectors']['ComptonScintillator']['File'] = material + '.h5'
+    result['Detectors']['ComptonScintillator']['File'] = 'out/' + desc + '.h5'
     result['PrimaryGenerator']['NumEvents'] = num_events
+    result['PrimaryGenerator']['PythonGeneratorArgs'] = [
+        '{}*MeV'.format(energy/MeV), '{}*mm'.format(y0/mm)]
     return result
 
 def main():
+    num_events = 50000
+    y0 = 0
+
     tr = compton.TaskRunner()
     conf = toml.load('gas.toml')
-    tr.add_task(compton.Task(reconf(conf, 'G4_Galactic', 1000000), 'vacuum'))
-    tr.add_task(compton.Task(reconf(conf, 'G4_AIR', 1000000), 'air'))
-    tr.add_task(compton.Task(reconf(conf, 'G4_He', 1000000), 'helium'))
-    tr.add_task(compton.Task(reconf(conf, 'G4_Xe', 1000000), 'xenon'))
+    for energy in np.array((1, 2, 4, 8, 16, 30)) * MeV:
+        for material, name in zip(
+                ['G4_Galactic', 'G4_AIR', 'G4_He', 'G4_Xe'],
+                ['vacuum', 'air', 'helium', 'xenon']):
+            desc = '{}-{}MeV-{}mm'.format(
+                name, round(energy/MeV), round(y0/mm))
+            tr.add_task(compton.Task(reconf(
+                conf, desc, material, num_events, energy, y0), desc))
     tr.run()
 
 
