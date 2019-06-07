@@ -15,9 +15,9 @@ def main():
     tr = compton.TaskRunner()
     conf = toml.load('gas.toml')
     tr.add_task(compton.Task(reconf(conf, 'G4_Galactic', 1000000), 'vacuum'))
-    tr.add_task(compton.Task(reconf(conf, 'G4_AIR', 1000000), 'helium'))
+    tr.add_task(compton.Task(reconf(conf, 'G4_AIR', 1000000), 'air'))
     tr.add_task(compton.Task(reconf(conf, 'G4_He', 1000000), 'helium'))
-    tr.add_task(compton.Task(reconf(conf, 'G4_Xe', 1000000), 'helium'))
+    tr.add_task(compton.Task(reconf(conf, 'G4_Xe', 1000000), 'xenon'))
     tr.run()
 
 
