@@ -14,3 +14,4 @@ sys.stdout = temp
 
 from .boost import *
 from .core import setup_plot
+from .tasks import *
