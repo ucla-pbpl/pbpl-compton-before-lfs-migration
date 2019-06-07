@@ -43,9 +43,12 @@ class PrimaryGeneratorAction(g4.G4VUserPrimaryGeneratorAction):
         self.conf = conf
         c = conf['PrimaryGenerator']
         p, m = c['PythonGenerator'].rsplit('.', 1)
+        gen_args = []
+        if 'PythonGeneratorArgs' in c:
+            gen_args = [eval(x) for x in c['PythonGeneratorArgs']]
         sys.path.append('./')
         mod = import_module(p)
-        self.generator = getattr(mod, m)()
+        self.generator = getattr(mod, m)(*gen_args)
 
     def GeneratePrimaries(self, event):
         try:
@@ -121,6 +124,9 @@ class SimpleDepositionSD(g4.G4VSensitiveDetector):
         pass
 
     def finalize(self, num_events):
+        path = os.path.split(self.filename)[0]
+        if path != '':
+            os.makedirs(path, exist_ok=True)
         f = h5py.File(self.filename, 'w')
         f['position'] = np.array(self.position)/mm
         f['edep'] = np.array(self.edep)/keV
