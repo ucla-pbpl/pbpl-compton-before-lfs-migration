@@ -7,7 +7,6 @@ import toml
 import tqdm
 import os
 
-
 class Task:
     def __init__(self, conf, desc, exec_path):
         self.conf = conf
