@@ -14,4 +14,6 @@ sys.stdout = temp
 
 from .boost import *
 from .core import setup_plot
+from .core import pbpl_blue_cmap
+from .core import pbpl_orange_cmap
 from .tasks import *

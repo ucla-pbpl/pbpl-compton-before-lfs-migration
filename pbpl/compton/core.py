@@ -39,4 +39,4 @@ pbpl_blue_cmap = LinearSegmentedColormap(
     'pbpl_blue_cmap', segmentdata=gen_cdict(0, 0.51, 0.72, 0.75, 0.3), N=256)
 
 pbpl_orange_cmap = LinearSegmentedColormap(
-    'pbpl_orange_cmap', segmentdata=gen_cdict(0, 0.90, 0.39, 0.0, 0.3), N=256)
+    'pbpl_orange_cmap', segmentdata=gen_cdict(0.90, 0.39, 0, 0.75, 0.3), N=256)
