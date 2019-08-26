@@ -8,8 +8,7 @@ Type = 'G4Box'
 pX = 2000.0   # X half-length (unit=mm)
 pY = 2000.0   # Y half-length (unit=mm)
 pZ = 2000.0   # Z half-length (unit=mm)
-# Material = 'G4_Galactic'
-Material = 'G4_AIR'
+Material = 'G4_Galactic'
 Translation = [0, 0, 0]
 Rotation = [0, 0, 0]
 Color = [0.0, 0.2, 1.0, 0.2]   # converter color (r g b a)
@@ -53,11 +52,11 @@ SolidName = 'cpt_scint:right'
 Material = 'G4_CESIUM_IODIDE'
 Color = [0.082, 0.722, 0.859, 0.3]   # converter color (r g b a)
 
-[Geometry.World.CptMagnet]
-Type = 'CadMesh'
-File = '../../cad/lil-cpt-magnet.stl'
-Material = 'G4_Cu'
-Color = [0.72, 0.45, 0.20, 1.0]   # converter color (r g b a)
+# [Geometry.World.CptMagnet]
+# Type = 'CadMesh'
+# File = '../../cad/lil-cpt-magnet.stl'
+# Material = 'G4_Cu'
+# Color = [0.72, 0.45, 0.20, 1.0]   # converter color (r g b a)
 
 [Fields.LilCpt]
 Type = 'ImportedMagneticField'
