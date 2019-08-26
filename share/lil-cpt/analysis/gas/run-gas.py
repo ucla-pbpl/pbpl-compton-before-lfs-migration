@@ -20,7 +20,7 @@ def reconf(conf, desc, material, num_events, energy, y0, dLi):
     return result
 
 def main():
-    num_events = 200000
+    num_events = 10000000
 
     tr = compton.ParallelTaskRunner()
     conf = toml.load('gas.toml')
