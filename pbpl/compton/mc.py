@@ -45,7 +45,13 @@ class PrimaryGeneratorAction(g4.G4VUserPrimaryGeneratorAction):
         p, m = c['PythonGenerator'].rsplit('.', 1)
         gen_args = []
         if 'PythonGeneratorArgs' in c:
-            gen_args = [eval(x) for x in c['PythonGeneratorArgs']]
+            for x in c['PythonGeneratorArgs']:
+                try:
+                    gen_args.append(eval(x))
+                except NameError:
+                    gen_args.append(x)
+            print(gen_args)
+            sys.exit()
         sys.path.append('./')
         mod = import_module(p)
         self.generator = getattr(mod, m)(*gen_args)
