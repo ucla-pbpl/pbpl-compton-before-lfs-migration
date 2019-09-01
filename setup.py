@@ -93,6 +93,7 @@ of FACET-II gamma diagnostics',
         'console_scripts':
         ['pbpl-compton-mc = pbpl.compton.mc:main',
          'pbpl-compton-convert-field = pbpl.compton.convert_field:main',
+         'pbpl-compton-convert-trajectories = pbpl.compton.convert_trajectories:main',
          'pbpl-compton-reduce-edep = pbpl.compton.reduce_edep:main',
          'pbpl-compton-plot-deposition = pbpl.compton.plot_deposition:main']
     },
