@@ -48,7 +48,7 @@ class PrimaryGeneratorAction(g4.G4VUserPrimaryGeneratorAction):
             for x in c['PythonGeneratorArgs']:
                 try:
                     gen_args.append(eval(x))
-                except NameError:
+                except:
                     gen_args.append(x)
         sys.path.append('./')
         mod = import_module(p)
