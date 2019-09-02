@@ -18,6 +18,7 @@ __all__ = [
     'uH', 'nH', 'pH',
     'NA', 'R_gas', 'Torr','atm', 'bar',
     'c_light', 'c2', 'deg', 'eplus', 'eps0', 'hbar', 'kB', 'm_amu', 'mbar',
+    'mrad',
     'me', 'mu0', 'pi', 'planck', 're', 'twopi',
     'a0', 'alpha0', 'eV', 'keV', 'MeV', 'GeV' ]
 
@@ -37,7 +38,7 @@ def define_constants(internal_units='AU'):
     global uF, nF, pF
     global uH, nH, pH
     global NA, R_gas, Torr, atm, bar
-    global c_light, c2, deg, eplus, eps0, hbar, kB, m_amu, mbar
+    global c_light, c2, deg, eplus, eps0, hbar, kB, m_amu, mbar, mrad
     global me, mu0, pi, planck, re, twopi
     global a0, alpha0, eV, keV, MeV, GeV
 
@@ -144,6 +145,7 @@ def define_constants(internal_units='AU'):
     kB = 1.3806488e-23 * (meter/sec)**2 * kg / kelvin
     m_amu = 1.660538921e-27*kg
     mbar = 1e-3*bar
+    mrad = 1e-3
     me = 9.10938215e-31*kg
     mu0 = 4*pi*1e-7*henry/meter
     planck = hbar*2*pi
