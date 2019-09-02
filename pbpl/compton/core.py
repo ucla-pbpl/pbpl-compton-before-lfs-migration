@@ -13,7 +13,7 @@ def setup_plot():
     mpl.rc('xtick.minor', size=2)
     mpl.rc('ytick.minor', size=2)
     mpl.rc('ytick', direction='in', right=True)
-    mpl.rc('legend', fontsize=8.0)
+    mpl.rc('legend', fontsize=7.0)
     mpl.rc('legend', labelspacing=0.25)
     mpl.rc('legend', frameon=False)
     mpl.rc('path', simplify=False)
