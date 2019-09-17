@@ -20,8 +20,8 @@ def setup_plot():
     mpl.rc('axes', unicode_minus=False, linewidth=0.8)
     mpl.rc('figure.subplot', right=0.97, top=0.97, bottom=0.14, left=0.13)
     mpl.rc('axes', prop_cycle=mpl.cycler(
-        'color', ['#0083b8', '#e66400', '#95b31b', '#ae224a']))
-        # 'color', ['#0083b8', '#e66400', '#95b31b', '#a2448f']))
+        'color', [
+            '#0083b8', '#e66400', '#93a661', '#ebc944', '#da1884', '#7e48bd']))
     mpl.rc('figure', max_open_warning=False)
 
 def gen_cdict(red, green, blue, midpoint, frac):
