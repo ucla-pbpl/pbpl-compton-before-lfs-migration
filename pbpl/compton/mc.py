@@ -198,11 +198,25 @@ class MyGeometry(g4.G4VUserDetectorConstruction):
             logical = g4.G4LogicalVolume(
                 solid, g4.gNistManager.FindOrBuildMaterial(
                     geom['Material']), geom_name)
-            if 'Translation' in geom:
-                translation = g4.G4ThreeVector(
-                    *np.array(geom['Translation'])*mm)
-            else:
-                translation = g4.G4ThreeVector()
+            transform = g4.G4Transform3D()
+            if 'Transformation' in geom:
+                for operation, value in zip(*geom['Transformation']):
+                    translation = g4.G4ThreeVector()
+                    rotation = g4.G4RotationMatrix()
+                    if operation == 'TranslateX':
+                        translation += g4.G4ThreeVector(value*mm, 0, 0)
+                    elif operation == 'TranslateY':
+                        translation += g4.G4ThreeVector(0, value*mm, 0)
+                    elif operation == 'TranslateZ':
+                        translation += g4.G4ThreeVector(0, 0, value*mm)
+                    elif operation == 'RotateX':
+                        rotation.rotateX(value*deg)
+                    elif operation == 'RotateY':
+                        rotation.rotateY(value*deg)
+                    elif operation == 'RotateZ':
+                        rotation.rotateZ(value*deg)
+                    transform = (
+                        g4.G4Transform3D(rotation, translation)*transform)
             if 'Rotation' in geom:
                 euler = np.array(geom['Rotation'])*deg
                 rotation = g4.G4RotationMatrix()
@@ -211,9 +225,13 @@ class MyGeometry(g4.G4VUserDetectorConstruction):
                 rotation.rotateZ(euler[2])
             else:
                 rotation = g4.G4RotationMatrix()
-
+            if 'Translation' in geom:
+                translation = g4.G4ThreeVector(
+                    *np.array(geom['Translation'])*mm)
+            else:
+                translation = g4.G4ThreeVector()
             physical = g4.G4PVPlacement(
-                g4.G4Transform3D(rotation, translation),
+                g4.G4Transform3D(rotation, translation) * transform,
                 geom_name, logical, parent_p, many, 0, check_overlap)
 
             if 'Color' in geom:
