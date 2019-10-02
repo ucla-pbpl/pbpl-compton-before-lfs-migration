@@ -265,6 +265,10 @@ def create_fields(conf):
             field_manager = g4.gTransportationManager.GetFieldManager()
             field_manager.SetDetectorField(field)
             field_manager.CreateChordFinder(field)
+            chord_finder = field_manager.GetChordFinder()
+            field = compton.ImportedMagneticField(c['File'])
+            if 'DeltaChord' in c:
+                chord_finder.SetDeltaChord(c['DeltaChord']*mm)
         else:
             raise ValueError(
                 "unimplemented Field type '{}'".format(field_type))
