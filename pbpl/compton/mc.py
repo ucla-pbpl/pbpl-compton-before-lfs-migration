@@ -11,6 +11,7 @@ import random
 from pbpl import compton
 import h5py
 from importlib import import_module
+from collections import namedtuple
 
 def get_parser():
     parser = argparse.ArgumentParser(
@@ -107,6 +108,8 @@ class MySteppingAction(g4.G4UserSteppingAction):
     def UserSteppingAction(self, step):
         pass
 
+def G4ThreeVector_to_list(x):
+    return [x.getX(), x.getY(), x.getZ()]
 
 class SimpleDepositionSD(g4.G4VSensitiveDetector):
     def __init__(self, name, filename):
@@ -114,14 +117,13 @@ class SimpleDepositionSD(g4.G4VSensitiveDetector):
         self.filename = filename
         self.position = []
         self.edep = []
-        self.num_events = 0
 
     def Initialize(self, hit_collection):
         pass
 
     def ProcessHits(self, step, history):
-        pos = step.GetPreStepPoint().GetPosition()
-        self.position.append((pos.getX(), pos.getY(), pos.getZ()))
+        self.position.append(
+            G4ThreeVector_to_list(step.GetPreStepPoint().GetPosition()))
         self.edep.append(step.GetTotalEnergyDeposit())
 
     def EndOfEvent(self, hit_collection):
@@ -136,6 +138,49 @@ class SimpleDepositionSD(g4.G4VSensitiveDetector):
         f['edep'] = np.array(self.edep)/keV
         f['edep'].attrs.create('num_events', num_events)
         f.close()
+
+TransmissionResult = namedtuple(
+    'TransmissionResult', ['position', 'direction', 'energy'])
+
+class TransmissionSD(g4.G4VSensitiveDetector):
+    def __init__(self, name, filename, particles):
+        g4.G4VSensitiveDetector.__init__(self, name)
+        self.filename = filename
+        self.particles = particles
+        self.results = { p:TransmissionResult([], [], []) for p in particles }
+
+    def Initialize(self, hit_collection):
+        pass
+
+    def ProcessHits(self, step, history):
+        proc = step.GetPostStepPoint().GetProcessDefinedStep()
+        if (proc == None) or (proc.GetProcessName() != 'Transportation'):
+            return
+        particle_name = str(step.GetTrack().GetDefinition().GetParticleName())
+        if particle_name in self.particles:
+            result = self.results[particle_name]
+            point = step.GetPostStepPoint()
+            result.position.append(
+                G4ThreeVector_to_list(point.GetPosition()))
+            result.direction.append(
+                G4ThreeVector_to_list(point.GetMomentumDirection()))
+            result.energy.append(point.GetKineticEnergy())
+
+    def EndOfEvent(self, hit_collection):
+        pass
+
+    def finalize(self, num_events):
+        path = os.path.split(self.filename)[0]
+        if path != '':
+            os.makedirs(path, exist_ok=True)
+        fout = h5py.File(self.filename, 'w')
+        for p, result in self.results.items():
+            gout = fout.create_group(p)
+            gout['position'] = np.array(result.position)/mm
+            gout['direction'] = np.array(result.direction)
+            gout['energy'] = np.array(result.energy)/MeV
+        fout['num_events'] = num_events
+        fout.close()
 
 
 def depth_first_tree_traversal(node):
@@ -266,9 +311,10 @@ def create_fields(conf):
             field_manager.SetDetectorField(field)
             field_manager.CreateChordFinder(field)
             chord_finder = field_manager.GetChordFinder()
-            field = compton.ImportedMagneticField(c['File'])
             if 'DeltaChord' in c:
                 chord_finder.SetDeltaChord(c['DeltaChord']*mm)
+            if 'ScalingFactor' in c:
+                field.setScalingFactor(c['ScalingFactor'])
         else:
             raise ValueError(
                 "unimplemented Field type '{}'".format(field_type))
@@ -287,6 +333,8 @@ def create_detectors(conf):
         sd_type = c['Type']
         if sd_type == 'SimpleDepositionSD':
             sd = SimpleDepositionSD('pbpl/' + name, c['File'])
+        elif sd_type == 'TransmissionSD':
+            sd = TransmissionSD('pbpl/' + name, c['File'], c['Particles'])
         else:
             raise ValueError(
                 "unimplemented Detector type '{}'".format(sd_type))
