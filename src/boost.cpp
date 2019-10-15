@@ -182,6 +182,12 @@ Load HDF5 file.  File contains following mandatory datasets:
 
 Args:
   filename (str): HDF5 filename
+)")
+        .def("setScalingFactor", &ImportedMagneticField::setScalingFactor,
+R"(setScalingFactor(value)
+
+Args:
+  value (float): set scaling factor (initially defaults to 1.0)
 )");
 
     export_cadmesh();

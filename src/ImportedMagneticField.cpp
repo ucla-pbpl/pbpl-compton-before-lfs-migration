@@ -42,6 +42,7 @@ void ImportedMagneticField::loadField(const std::string& filename)
     for (unsigned i=0; i<field.num_elements(); ++i) {
         field.data()[i] *= tesla;
     }
+    scaling_factor = 1.0;
 }
 
 
@@ -116,4 +117,6 @@ void ImportedMagneticField::GetFieldValue(const double point[4], double *result)
                 c111*xd[0]*xd[1]*xd[2]);
         }
     }
+    for (unsigned i=0; i<6; ++i)
+        result[i] *= scaling_factor;
 }
