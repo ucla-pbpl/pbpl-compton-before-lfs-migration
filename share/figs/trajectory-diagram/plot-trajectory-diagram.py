@@ -126,7 +126,7 @@ def plot_sextupole(output):
 
     for alpha0, label in zip(
             np.array((27.6, 20.0, 10.0, 0.0, -10.0))*deg,
-            ['Mirror', None, None, "Lil' Sextupole", None]):
+            ['Mirror', None, None, "CPT", None]):
         text = r'$B_y = G_0 z^2$' + '\n' + r'$G_0 = 18.1\;{\rm T/m^2}$'
         if label is not None:
             text += '\n' + label
