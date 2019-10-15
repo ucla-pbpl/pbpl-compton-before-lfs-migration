@@ -5,8 +5,7 @@ import argparse
 import numpy as np
 import toml
 import tqdm
-from .core import setup_plot
-from .core import pbpl_blue_cmap
+import pbpl.compton as compton
 from pbpl import compton
 import Geant4 as g4
 from Geant4.hepunit import *
@@ -20,6 +19,7 @@ from collections import namedtuple
 import itertools
 from functools import reduce
 import operator
+from scipy.spatial.transform import Rotation
 
 def get_parser():
     parser = argparse.ArgumentParser(
@@ -42,16 +42,6 @@ def get_args():
     args = parser.parse_args()
     args.conf = toml.load(args.config_filename)
     return args
-
-def transform(position, translation, euler):
-    result = []
-    for r in position:
-        rp = g4.G4ThreeVector(*r) + translation
-        rp.rotateZ(euler[0])
-        rp.rotateY(euler[1])
-        rp.rotateZ(euler[2])
-        result.append([rp.getX(), rp.getY(), rp.getZ()])
-    return np.array(result)
 
 IndexType = namedtuple('IndexType', 'label unit vals is_binned')
 
@@ -86,11 +76,12 @@ def nested_get(dictionary, *keys):
 def project_histogram(filename, conf, indices):
     fin = h5py.File(filename, 'r')
     edep = fin['edep'][:]*keV
-    position = fin['position'][:]*mm
+    pos = fin['position'][:]*mm
     num_events = fin['edep'].attrs['num_events']
-    translation = g4.G4ThreeVector(*np.array(conf['Translation'])*mm)
-    euler = np.array(conf['Rotation'])*deg
-    tpos = transform(position, translation, euler)
+    M = compton.build_transformation(conf, mm, deg)
+    tpos = np.array([compton.transform(M, x) for x in pos])
+    # from pyevtk.hl import pointsToVTK
+    # pointsToVTK("tpos", *np.ascontiguousarray(tpos.T), data=None)
     H, edges = np.histogramdd(
         tpos, tuple(x.vals for x in indices),
         weights = (edep/num_events))

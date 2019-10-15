@@ -16,4 +16,6 @@ from .boost import *
 from .core import setup_plot
 from .core import pbpl_blue_cmap
 from .core import pbpl_orange_cmap
+from .core import build_transformation
+from .core import transform
 from .tasks import *
