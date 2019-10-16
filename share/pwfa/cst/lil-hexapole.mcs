@@ -568,7 +568,7 @@ Public Function cpt_Mirror()
    Solid.Rename("cpt_pole:bottom", "bottom_right")
    Solid.Rename("cpt_pole:bottom_1", "bottom_left")
    Solid.Rename("cpt_pole:top", "top_right")
-   Solid.Rename("cpt_pole:top_1", "top_Left")
+   Solid.Rename("cpt_pole:top_1", "top_left")
 
    With Transform
       .Reset()
