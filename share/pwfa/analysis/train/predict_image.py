@@ -17,9 +17,9 @@ def main(name):
 
     f = h5py.File(filename, 'r')
     truth = np.zeros([50, 31])
-    name = os.path.splitext(filename)[0]
+    #name = os.path.splitext(filename)[0]
 
-    with np.load(name+'.npz') as data:
+    with np.load(dirname+name+'.npz') as data:
         truth = data['histo']
 
     points = np.array(f['position'])
@@ -36,33 +36,40 @@ def main(name):
     test_predictions = model.predict([[b_out]])
 
 
-    fig, ax = plt.subplots(2, 2)
-    truth_im = ax[0, 0].imshow(truth)
-    ax[0, 0].set_title("truth")
-    ax[0, 0].set_xlabel('E')
-    ax[0, 0].set_ylabel('Y')
-    #fig.colorbar(truth_im, cax=ax[0, 0])
-    pre_im = ax[0, 1].imshow(test_predictions.reshape(truth.shape))
-    ax[0, 1].set_title("prediction")
-    ax[0, 1].set_xlabel('E')
-    ax[0, 1].set_ylabel('Y')
-    #fig.colorbar(pre_im, cax=ax[0, 1])
+    #fig, ax = plt.subplots(2, 2)
+    fig3 = plt.figure(constrained_layout=True)
+    gs = fig3.add_gridspec(2, 2)
+    f3_ax1 = fig3.add_subplot(gs[0, 1])
+    truth_im = f3_ax1.imshow(truth)
+    f3_ax1.set_title("truth")
+    f3_ax1.set_xlabel('E')
+    f3_ax1.set_ylabel('Y')
+    #fig3.colorbar(truth_im, cax=f3_ax1)
 
-    im = ax[1, 0].imshow(b_out, interpolation='bilinear', origin='lower')
+    f3_ax2 = fig3.add_subplot(gs[1, 1])
+    pre_im = f3_ax2.imshow(test_predictions.reshape(truth.shape))
+    f3_ax2.set_title("prediction")
+    f3_ax2.set_xlabel('E')
+    f3_ax2.set_ylabel('Y')
+    #fig.colorbar(pre_im, cax=f3_ax2)
+
+    f3_ax3 = fig3.add_subplot(gs[:, 0])
+    f3_ax3.set_title('gs[:, 0]')
+    im = f3_ax3.imshow(b_out, interpolation='bilinear', origin='lower')
     #ax.clabel(CS, inline=1, fontsize=10)
-    ax[1, 0].set_title("e dep")
-    ax[1, 0].set_xlabel('X')
-    ax[1, 0].set_ylabel('Y')
+    f3_ax3.set_title("e dep")
+    f3_ax3.set_xlabel('X')
+    f3_ax3.set_ylabel('Y')
     #fig.colorbar(im, cax=ax[1,0])
     #fig.subplots_adjust(right=0.8)
     #cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
     #fig.colorbar(truth_im, cax=cbar_ax)
 
-    plt.savefig("compare_image_test"+name+"-startover.png")
+    plt.savefig("compare_image_test-"+name+"-startover.png")
 
 if __name__ == "__main__":
    # stuff only to run when not called via 'import' here
    main("gYE-col-2e6-4XKZZU-0")
-   main("dgYrayE-col-2e7-SG84SF-0")
+   main("dgYrayE-col-2e7-N5N13U-0")
    main('rYgE-col-2e7-1L1XU4-0')
    main("varY-col-2e6-UPFZET-0")

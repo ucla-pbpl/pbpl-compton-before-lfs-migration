@@ -8,20 +8,20 @@ import generate_distrib
 def get_energies(num):
     bins=50
     lower, upper = 0.25, 25
-    #weights = np.zeros([ bins])
+    weights = np.zeros([ bins])
     #1. random distrib
-    #for x in range(1, bins):
-    #   weights[x]=random.randint(0, 99)
+    for x in range(1, bins):
+       weights[x]=random.randint(0, 99)
     #2. random mono
     #weights[random.randint(0, bins-1)]=1
-    #energies = np.linspace(lower, upper, bins)
-    #energy = random.choices(energies, weights, k=num)
+    energies = np.linspace(lower, upper, bins)
+    energy = random.choices(energies, weights, k=num)
     #3. random centered gaussian
-    mean = random.uniform(lower, upper)
-    sigma = (upper-lower)/7
-    X = stats.truncnorm(
-    (lower - mean) / sigma, (upper - mean) / sigma, loc=mean, scale=sigma)
-    energy = X.rvs(num)
+    #mean = random.uniform(lower, upper)
+    #sigma = (upper-lower)/7
+    #X = stats.truncnorm(
+    #(lower - mean) / sigma, (upper - mean) / sigma, loc=mean, scale=sigma)
+    #energy = X.rvs(num)
     #4. other stats function
     #energy = generate_distrib.generate_distrib(lower, upper, stats.rayleigh, num)
     return energy
@@ -32,20 +32,20 @@ def get_ys(num):
     upper = 30
     weights = np.zeros([ y_bins])
     #1. random distrib
-    for x in range(0, y_bins):
-        weights[x]=random.randint(0, 99)
+    #for x in range(0, y_bins):
+    #    weights[x]=random.randint(0, 99)
     #2. random mono
     #weights[random.randint(0, y_bins-1)]=1
-    ys = np.linspace(lower, upper, y_bins)
-    y = random.choices(ys, weights, k=num)
+    #ys = np.linspace(lower, upper, y_bins)
+    #y = random.choices(ys, weights, k=num)
     #3. random centered gaussian
-    #mean = random.uniform(lower, upper)
-    #sigma = (upper-lower)/7
-    #X = stats.truncnorm(
-    #(lower - mean) / sigma, (upper - mean) / sigma, loc=mean, scale=sigma)
-    #y = X.rvs(num)
+    mean = random.uniform(lower, upper)
+    sigma = (upper-lower)/7
+    X = stats.truncnorm(
+    (lower - mean) / sigma, (upper - mean) / sigma, loc=mean, scale=sigma)
+    y = X.rvs(num)
     #4. other stats function
-    #y = generate_distrib.generate_distrib(lower, upper, stats.dgamma, num, [10])
+    #y = generate_distrib.generate_distrib(lower, upper, stats.cosine, num, [10])
     return y
 
 def gamma_spray(total, desc):

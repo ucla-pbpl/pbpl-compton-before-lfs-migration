@@ -22,7 +22,7 @@ def main():
     tr = compton.ParallelTaskRunner()
     conf = toml.load('pwfa.toml')
     for f_i in range(0, 10):
-        desc = 'rYgE-col-2e7-{}-{}'.format(random_affix, f_i)
+        desc = 'gYrE-col-2e7-{}-{}'.format(random_affix, f_i)
         tr.add_task(compton.Task(
             reconf(
                 conf, desc, f_i, num_events),

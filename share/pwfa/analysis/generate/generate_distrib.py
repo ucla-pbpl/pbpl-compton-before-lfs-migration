@@ -40,6 +40,15 @@ def main():
     xr = generate_distrib(0, 1, stats.rayleigh, 100000)
     plt.hist(xr,density=True)
 
+    fig3 = plt.figure(constrained_layout=True)
+    gs = fig3.add_gridspec(2, 2)
+    f3_ax1 = fig3.add_subplot(gs[0, 1])
+    f3_ax1.set_title('gs[0, 1]')
+    f3_ax1 = fig3.add_subplot(gs[1, 1])
+    f3_ax1.set_title('gs[1, 1]')
+    f3_ax2 = fig3.add_subplot(gs[:, 0])
+    f3_ax2.set_title('gs[:, 0]')
+
     plt.show()
 
 if __name__ == '__main__':
