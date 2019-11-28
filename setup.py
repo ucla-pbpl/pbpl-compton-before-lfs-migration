@@ -96,7 +96,9 @@ of FACET-II gamma diagnostics',
          'pbpl-compton-extrude-vrml = pbpl.compton.extrude_vrml:main',
          'pbpl-compton-convert-trajectories = pbpl.compton.convert_trajectories:main',
          'pbpl-compton-reduce-edep = pbpl.compton.reduce_edep:main',
-         'pbpl-compton-plot-deposition = pbpl.compton.plot_deposition:main']
+         'pbpl-compton-plot-deposition = pbpl.compton.plot_deposition:main',
+         'pbpl-compton-build-collimator = pbpl.compton.build_collimator:main'
+        ]
     },
     data_files=[
         ('share/lil-cpt',

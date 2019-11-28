@@ -84,7 +84,7 @@ Sub Main()
       .Transparentoutline("True")
       .Create()
    End With
-   
+
    With Material
       .Reset()
       .Name("Steel-1008")
@@ -130,7 +130,7 @@ Sub Main()
       .AddNonlinearCurveValue("7.815e+006", "12")
       .GenerateNonlinearCurve()
       .Create()
-   End With 
+   End With
 
    cpt_Build()
    sf_Build()
@@ -141,11 +141,11 @@ Sub Main()
       .SetOrigin("0", "0", "0")
       .SetUVector("1", "0", "0")
    End With
-   
-   ' With Mesh 
-   '   .MeshType "PBA" 
+
+   ' With Mesh
+   '   .MeshType "PBA"
    '   .SetCreator "Tracking"
-   ' End With 
+   ' End With
 
    With MeshSettings
       .SetMeshType("Hex")
@@ -158,7 +158,7 @@ Sub Main()
 
    Mesh.SetCreator("Tracking")
    Mesh.SetFlavor("Low Frequency")
-   
+
    With TrackingSolver
       .Reset()
       .Method("Hexahedral")
@@ -199,8 +199,8 @@ End Sub
 
 
 
-'     __   ___   ___ ___  ____  ______   ___   ____  
-'    /  ] /   \ |   |   ||    \|      | /   \ |    \ 
+'     __   ___   ___ ___  ____  ______   ___   ____
+'    /  ] /   \ |   |   ||    \|      | /   \ |    \
 '   /  / |     || _   _ ||  o  )      ||     ||  _  |
 '  /  /  |  O  ||  \_/  ||   _/|_|  |_||  O  ||  |  |
 ' /   \_ |     ||   |   ||  |    |  |  |     ||  |  |
@@ -580,7 +580,7 @@ Public Function cpt_Mirror()
    Solid.Rename("cpt_pole:bottom", "bottom_right")
    Solid.Rename("cpt_pole:bottom_1", "bottom_left")
    Solid.Rename("cpt_pole:top", "top_right")
-   Solid.Rename("cpt_pole:top_1", "top_Left")
+   Solid.Rename("cpt_pole:top_1", "top_left")
 
    With Transform
       .Reset()
@@ -622,13 +622,13 @@ Public Function cpt_Mirror()
    Solid.Rename("cpt_scint:right_1", "left")
 End Function
 
-'  ____   ___  ___    ____   ___  
-' |    \ /  _]|   \  |    \ /   \ 
+'  ____   ___  ___    ____   ___
+' |    \ /  _]|   \  |    \ /   \
 ' |  o  )  [_ |    \ |  D  )     |
 ' |   _/    _]|  D  ||    /|  O  |
 ' |  | |   [_ |     ||    \|     |
 ' |  | |     ||     ||  .  \     |
-' |__| |_____||_____||__|\_|\___/ 
+' |__| |_____||_____||__|\_|\___/
 
 Public Function sf_DefineParameters()
    ' StoreParameter("sf_yoke_alpha", "19.29")
@@ -685,7 +685,7 @@ Public Function sf_InsertYoke()
       .SetOrigin("0", "0", "sf_z0")
       .SetUVector("1", "0", "0")
    End With
-   
+
    With Rectangle
       .Reset()
       .Name("outer_entrance")
@@ -696,7 +696,7 @@ Public Function sf_InsertYoke()
    End With
 
    WCS.MoveWCS("local", "0.0", "0.0", "sf_yoke_a4")
-   
+
    With Rectangle
       .Reset()
       .Name("outer_exit")
@@ -732,7 +732,7 @@ Public Function sf_InsertYoke()
    End With
 
    WCS.MoveWCS("local", "0.0", "0.0", "sf_yoke_a4")
-   
+
    With Rectangle
       .Reset()
       .Name("inner_exit")
@@ -799,7 +799,7 @@ Public Function sf_InsertPoles()
    End With
 
    Component.New("sf_pole")
-   
+
    WCS.MoveWCS("local", "0.0", "0.0", "sf_r0")
 
    With Polygon
@@ -835,7 +835,7 @@ Public Function sf_InsertPoles()
       .LineTo("-0.5*sf_pole_exit_width_inner", "0.5*sf_pole_gap")
       .Create()
    End With
-   
+
    With LoftCurves
       .Reset()
       .Name("bottom")
@@ -894,9 +894,9 @@ Public Function sf_InsertScintillator()
       .SetOrigin("0", "0", "sf_z0")
       .SetUVector("1", "0", "0")
    End With
-   
-   With Transform 
-      .Reset() 
+
+   With Transform
+      .Reset()
       .Name("sf_scint:right")
       .Origin("Free")
       .Center("0", "0", "0")
@@ -920,13 +920,13 @@ Public Function sf_InsertCoils()
    End With
 
    WCS.MoveWCS("local", "0.5*sf_yoke_a2", "0.5*sf_yoke_a3", "0.0")
-   
+
    With WCS
       .SetNormal("-1", "0", "0")
       .SetUVector("0", "0", "1")
    End With
 
-   With Polygon 
+   With Polygon
       .Reset()
       .Name("coil_path")
       .Curve("sf_curves")
@@ -943,7 +943,7 @@ Public Function sf_InsertCoils()
    Pick.PickCurveEndpointFromId("sf_curves:coil_path", "3")
    Pick.PickCurveEndpointFromId("sf_curves:coil_path", "4")
 
-   With BlendCurve 
+   With BlendCurve
       .Reset()
       .Name("blend4")
       .Radius("sf_r0")
@@ -957,7 +957,7 @@ Public Function sf_InsertCoils()
    End With
 
    WCS.MoveWCS("local", "0.0", "0.0", "-sf_r0")
-   
+
    With Rectangle
       .Reset()
       .Name("coil_profile")
@@ -966,7 +966,7 @@ Public Function sf_InsertCoils()
       .Yrange("-sf_coil_height", "0")
       .Create()
    End With
-   
+
    With Coil
       .Reset()
       .Name("sf_bottom")
@@ -986,7 +986,7 @@ Public Function sf_InsertCoils()
       .SetUVector("1", "0", "0")
    End With
 
-   With Transform 
+   With Transform
       .Reset()
       .Name("sf_bottom")
       .Origin("Free")
@@ -1009,14 +1009,14 @@ Public Function sf_InsertCoils()
       .Repetitions("1")
       .MultipleSelection("False")
       .Transform("Mixed", "Mirror")
-   End With 
+   End With
 
    Coil.Rename("sf_bottom_1", "sf_bottom_left")
    Coil.Rename("sf_top_1", "sf_top_left")
    Coil.Rename("sf_bottom", "sf_bottom_right")
    Coil.Rename("sf_top", "sf_top_right")
-   
+
    Coil.FlipCurrentDirection("sf_top_left")
    Coil.FlipCurrentDirection("sf_bottom_left")
-   
+
 End Function
