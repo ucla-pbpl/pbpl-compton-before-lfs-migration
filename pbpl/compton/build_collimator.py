@@ -343,6 +343,7 @@ def create_homing_map(mappings):
 
 def plot_homing_map(homing_map, hull):
     compton.setup_plot()
+    plot.rc('figure.subplot', right=0.99, top=0.99, bottom=0.09, left=0.10)
 
     mesh_dx = 0.5*mm
 
@@ -366,6 +367,7 @@ def plot_homing_map(homing_map, hull):
         fill=False, linewidth=0.5, edgecolor='k', zorder=10)
     scale_limits(ax.xaxis, 1.1)
     scale_limits(ax.yaxis, 1.1)
+    plot.title(r'$\xi(z, y)$')
     plot.xlabel(r'$z_{\rm scint}$ (mm)', labelpad=0.0)
     plot.ylabel(r'$y_{\rm scint}$ (mm)', labelpad=0.0)
     ax.xaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
@@ -384,6 +386,7 @@ def plot_homing_map(homing_map, hull):
         fill=False, linewidth=0.5, edgecolor='k', zorder=10)
     scale_limits(ax.xaxis, 1.1)
     scale_limits(ax.yaxis, 1.1)
+    plot.title(r'$\phi(z, y)$')
     plot.xlabel(r'$z_{\rm scint}$ (mm)', labelpad=0.0)
     plot.ylabel(r'$y_{\rm scint}$ (mm)', labelpad=0.0)
     ax.xaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
