@@ -29,6 +29,7 @@ from scipy.ndimage import gaussian_filter
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plot
+from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 from Geant4.hepunit import *
 import pbpl.compton as compton
@@ -341,7 +342,9 @@ def create_homing_map(mappings):
     return smooth_interp, hull
 
 
-def plot_homing_map(homing_map, hull):
+def plot_homing_map(filename, homing_map, hull):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    output = PdfPages(filename)
     compton.setup_plot()
     plot.rc('figure.subplot', right=0.99, top=0.99, bottom=0.09, left=0.10)
 
@@ -372,7 +375,7 @@ def plot_homing_map(homing_map, hull):
     plot.ylabel(r'$y_{\rm scint}$ (mm)', labelpad=0.0)
     ax.xaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
     ax.yaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
-    plot.savefig('xi.pdf', transparent=True)
+    output.savefig(fig, transparent=True)
 
     fig = plot.figure(figsize=(244/72, 100/72))
     ax = fig.add_subplot(1, 1, 1, aspect=1.0)
@@ -391,7 +394,8 @@ def plot_homing_map(homing_map, hull):
     plot.ylabel(r'$y_{\rm scint}$ (mm)', labelpad=0.0)
     ax.xaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
     ax.yaxis.set_minor_locator(matplotlib.ticker.AutoMinorLocator())
-    plot.savefig('phi.pdf', transparent=True)
+    output.savefig(fig, transparent=True)
+    output.close()
 
 
 def main():
@@ -401,18 +405,22 @@ def main():
     with h5py.File(conf['Files']['Input'], 'r') as fin:
         mappings = analyze_trajectories(conf, fin)
         homing_map, hull = create_homing_map(mappings)
-        plot_homing_map(homing_map, hull)
+        if 'DiagnosticOutput' in conf['Files']:
+            plot_homing_map(
+                conf['Files']['DiagnosticOutput'], homing_map, hull)
 
     collimator = build_collimator(conf, homing_map, hull)
 
-    step_writer = STEPControl_Writer()
-    step_writer.Transfer(collimator, STEPControl_AsIs)
-    status = step_writer.Write(conf['Files']['Output'])
+    if 'STEPOutput' in conf['Files']:
+        step_writer = STEPControl_Writer()
+        step_writer.Transfer(collimator, STEPControl_AsIs)
+        status = step_writer.Write(conf['Files']['STEPOutput'])
 
-    mesh = BRepMesh_IncrementalMesh(collimator, 1.0, True, 20*deg, True)
-    stl_writer = StlAPI_Writer()
-    stl_writer.SetASCIIMode(False)
-    stl_writer.Write(collimator, 'collimator.stl')
+    if 'STLOutput' in conf['Files']:
+        mesh = BRepMesh_IncrementalMesh(collimator, 1.0, True, 20*deg, True)
+        stl_writer = StlAPI_Writer()
+        stl_writer.SetASCIIMode(False)
+        stl_writer.Write(collimator, conf['Files']['STLOutput'])
 
     return 0
 
